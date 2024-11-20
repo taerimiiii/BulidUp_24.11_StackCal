@@ -83,7 +83,6 @@ int IsPrior(char OperatorInStack, char OperatorInToken) {
 }
 
 // 중위표기식을 후위표기식으로 고치는 함수
-// 코드 분석 필요
 void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 	LinkedListStack* Stack;
 	char Token[32];
@@ -98,13 +97,12 @@ void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 
 		// 숫자라면
 		if (Type == OPERAND) {
-			strcat(PostfixExpression, Token);
+			strcat(PostfixExpression, Token);  // 후위표기식에 숫자 저장O. 스택 푸시X
 			strcat(PostfixExpression, " ");
 		}
 		// 왼쪽 소괄호라면
 		else if (Type == LEEF_PARENTHESIS) {
-			// 여는 괄호를 스택에 푸쉬
-			LLS_Push(Stack, LLS_CreateNode(Token));
+			LLS_Push(Stack, LLS_CreateNode(Token));  // 후위표기식에 저장X. 여는 괄호를 스택에 푸쉬O
 		}
 		// 오른쪽 소괄호라면
 		else if (Type == RIGHT_PARENTHESIS) {
@@ -118,7 +116,7 @@ void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 				}
 				else {
 					strcat(PostfixExpression, Popped->Data);
-					strcat(PostfixExpression, " ");  // 공백 추가
+					strcat(PostfixExpression, " ");
 					LLS_DestroyNode(Popped);
 				}
 			}
@@ -127,33 +125,36 @@ void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 		else {
 			while (!LLS_IsEmpty(Stack) &&
 				!IsPrior(LLS_Top(Stack)->Data[0], Token[0])) {  //스택이 비어있지 않고, 우선순위가 옳을 동안
-				Node* Popped = LLS_Pop(Stack);
 
-				if (Popped->Data[0] != LEEF_PARENTHESIS) {
+				Node* Popped = LLS_Pop(Stack);  // Popped는 스택의 최상위 노드(=현재 무조건 연산자)를 가리키는 포인터이다.
+
+				if (Popped->Data[0] != LEEF_PARENTHESIS) {  //스택의 최상위 연산자가 현재 연산자보다 우선순위가 높거나 같다면 스택에서 팝하여 후위 표기식에 추가.
 					strcat(PostfixExpression, Popped->Data);
-					strcat(PostfixExpression, " ");  // 공백 추가
+					strcat(PostfixExpression, " ");
 				}
 
-				LLS_DestroyNode(Popped);
+				LLS_DestroyNode(Popped);  // 스택을 팝 하였으므로 노드 소멸 연산. (사용하지 않는 메모리 삭제하기)
 			}
 
-			LLS_Push(Stack, LLS_CreateNode(Token));
+			LLS_Push(Stack, LLS_CreateNode(Token));  //현재 연산자는 스택에 푸쉬.
 		}
 	}
 
-	// 스택에 남아있는 연산자 추가?
+	// 스택에 남아있는 연산자 추가
+	// 역할 : 입력 문자열을 모두 처리한 후 스택에 남아 있는 연산자를 후위 표기식에 추가.
 	while (!LLS_IsEmpty(Stack)) {
-		Node* Popped = LLS_Pop(Stack);
 
-		if (Popped->Data[0] != LEEF_PARENTHESIS) {
-			strcat(PostfixExpression, Popped->Data);
-			strcat(PostfixExpression, " ");  // 공백 추가
+		Node* Popped = LLS_Pop(Stack);  // Popped는 스택의 최상위 노드(=현재 무조건 연산자)를 가리키는 포인터이다.
+
+		if (Popped->Data[0] != LEEF_PARENTHESIS) {   //여는 괄호는 제거하지만 출력하지 않음.
+			strcat(PostfixExpression, Popped->Data); //스택에 남아 있는 연산자는 순서대로 후위 표기식으로 출력.
+			strcat(PostfixExpression, " ");
 		}
 
-		LLS_DestroyNode(Popped);
+		LLS_DestroyNode(Popped);  // 스택을 팝 하였으므로 노드 소멸 연산. (사용하지 않는 메모리 소멸하기)
 	}
 
-	LLS_DestroyStack(Stack);
+	LLS_DestroyStack(Stack);  // 모든 스택을 사용하였으므로, 스택 소멸 연산. (사용하지 않는 메모리 소멸하기)
 }
 
 // 후위표기식 계산 함수
