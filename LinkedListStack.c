@@ -1,13 +1,15 @@
 #include "LinkedListStack.h"
 
+// ìŠ¤íƒ ìƒì„± í•¨ìˆ˜
 void LLS_CreateStack(LinkedListStack **Stack)
 {
-	// ½ºÅÃÀ» ÀÚÀ¯ ÀúÀå¼Ò¿¡ »ý¼º
+	// ìŠ¤íƒì„ ìžìœ  ì €ìž¥ì†Œì— ìƒì„±
 	(*Stack) = (LinkedListStack*)malloc(sizeof(LinkedListStack));
-	(*Stack)->List = NULL;
-	(*Stack)->Top = NULL;
+	(*Stack)->List = NULL;  //í—¤ë“œ
+	(*Stack)->Top = NULL;   //í…Œì¼
 }
 
+// ìŠ¤íƒ ì†Œë©¸ í•¨ìˆ˜ (ìžìœ ì €ìž¥ì†Œ(ë™ì í• ë‹¹) ì†Œë©¸ í•¨ìˆ˜)
 void LLS_DestroyStack(LinkedListStack* Stack)
 {
 	while (!LLS_IsEmpty(Stack))
@@ -16,28 +18,31 @@ void LLS_DestroyStack(LinkedListStack* Stack)
 		LLS_DestroyNode(Popped);
 	}
 
-	// ½ºÅÃÀ» ÀÚÀ¯ ÀúÀå¼Ò¿¡¼­ ÇØÁ¦
+	// ìŠ¤íƒì„ ìžìœ  ì €ìž¥ì†Œì—ì„œ í•´ì œ
 	free(Stack);
 }
 
+// ë…¸ë“œ ìƒì„± í•¨ìˆ˜
 Node* LLS_CreateNode(char* NewData)
 {
 	Node* NewNode = (Node*)malloc(sizeof(Node));
 	NewNode->Data = (char*)malloc(strlen(NewData) + 1);
 
-	strcpy(NewNode->Data, NewData);	 //µ¥ÀÌÅÍ¸¦ ÀúÀåÇÑ´Ù.
+	strcpy(NewNode->Data, NewData);	 //ë°ì´í„°ë¥¼ ì €ìž¥í•œë‹¤.
 
-	NewNode->NextNode = NULL;  //´ÙÀ½ ³ëµå¿¡ ´ëÇÑ Æ÷ÀÎÅÍ´Â NULL·Î ÃÊ±âÈ­ÇÑ´Ù.
+	NewNode->NextNode = NULL;  //ë‹¤ìŒ ë…¸ë“œì— ëŒ€í•œ í¬ì¸í„°ëŠ” NULLë¡œ ì´ˆê¸°í™”í•œë‹¤.
 
-	return NewNode;  //³ëµåÀÇ ÁÖ¼Ò¸¦ ¹ÝÈ¯ÇÑ´Ù.
+	return NewNode;  //ë…¸ë“œì˜ ì£¼ì†Œë¥¼ ë°˜í™˜í•œë‹¤.
 }
 
+// ë…¸ë“œ ì†Œë©¸ í•¨ìˆ˜ (ìžìœ ì €ìž¥ì†Œ(ë™ì í• ë‹¹) ì†Œë©¸ í•¨ìˆ˜)
 void LLS_DestroyNode(Node* _Node)
 {
 	free(_Node->Data);
 	free(_Node);
 }
 
+// ë…¸ë“œ ì‚½ìž… í•¨ìˆ˜
 void LLS_Push(LinkedListStack* Stack, Node* NewNode)
 {
 	if (Stack->List == NULL)
@@ -46,17 +51,18 @@ void LLS_Push(LinkedListStack* Stack, Node* NewNode)
 	}
 	else
 	{
-		// ½ºÅÃÀÇ Top¿¡ ½Å±Ô ³ëµå¸¦ ¿¬°áÇÑ´Ù.
+		// ìŠ¤íƒì˜ Topì— ì‹ ê·œ ë…¸ë“œë¥¼ ì—°ê²°í•œë‹¤.
 		Stack->Top->NextNode = NewNode;
 	}
 
-	// ½ºÅÃÀÇ Top ÇÊµå¿¡ »õ ³ëµåÀÇ ÁÖ¼Ò¸¦ µî·ÏÇÑ´Ù.
+	// ìŠ¤íƒì˜ Top í•„ë“œì— ìƒˆ ë…¸ë“œì˜ ì£¼ì†Œë¥¼ ë“±ë¡í•œë‹¤.
 	Stack->Top = NewNode;
 }
 
+// ë…¸ë“œ ì œê±° í•¨ìˆ˜
 Node* LLS_Pop(LinkedListStack* Stack)
 {
-	// LLS_Pop() ÇÔ¼ö°¡ ¹ÝÈ¯ÇÒ ÃÖ»óÀ§ ³ëµå ÀúÀå
+	// LLS_Pop() í•¨ìˆ˜ê°€ ë°˜í™˜í•  ìµœìƒìœ„ ë…¸ë“œ ì €ìž¥
 	Node* TopNode = Stack->Top;
 
 
@@ -67,14 +73,14 @@ Node* LLS_Pop(LinkedListStack* Stack)
 	}
 	else
 	{
-		// Top ¾Æ·¡¿¡ ÀÖ´ø ³ëµå¸¦ »õ·Î¿î Current Top¿¡ ÀúÀå
+		// Top ì•„ëž˜ì— ìžˆë˜ ë…¸ë“œë¥¼ ìƒˆë¡œìš´ Current Topì— ì €ìž¥
 		Node* CurrentTop = Stack->List;
 		while (CurrentTop != NULL && CurrentTop->NextNode != Stack->Top)
 		{
 			CurrentTop = CurrentTop->NextNode;
 		}
 
-		// CurrentTop¸¦ Top¿¡ ÀúÀå
+		// CurrentTopë¥¼ Topì— ì €ìž¥
 		Stack->Top = CurrentTop;
 		Stack->Top->NextNode = NULL;
 	}
@@ -82,11 +88,13 @@ Node* LLS_Pop(LinkedListStack* Stack)
 	return TopNode;
 }
 
+// ìŠ¤íƒ ìµœìƒìœ„ ë…¸ë“œ(í…Œì¼) ë°˜í™˜ í•¨ìˆ˜
 Node* LLS_Top(LinkedListStack* Stack)
 {
 	return Stack->Top;
 }
 
+// ìŠ¤íƒ í¬ê¸° ë°˜í™˜ í•¨ìˆ˜
 int LLS_GetSize(LinkedListStack* Stack)
 {
 	int Count = 0;
@@ -101,6 +109,8 @@ int LLS_GetSize(LinkedListStack* Stack)
 	return Count;
 }
 
+// ìŠ¤íƒì´ ë¹„ì–´ ìžˆìœ¼ë©´ 1ì„ ë°˜í™˜
+// ìŠ¤íƒì´ ë¹„ì–´ ìžˆì§€ ì•Šìœ¼ë©´ 0ì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
 int LLS_IsEmpty(LinkedListStack* Stack)
 {
 	return (Stack->List == NULL);
