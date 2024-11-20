@@ -48,6 +48,7 @@ unsigned int GetNextToken(char* Expression, char* Token, int* TYPE)
 // 우선순위가 낮을수록 먼저 연산한다.
 int GetPriority(char Operator, int InStack)
 {
+	// 숫자이면 우선순위-1??
 	int Priority = -1;
 
 	switch (Operator)
@@ -82,6 +83,7 @@ int IsPrior(char OperatorInStack, char OperatorInToken) {
 }
 
 // 중위표기식을 후위표기식으로 고치는 함수
+// 코드 분석 필요
 void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 	LinkedListStack* Stack;
 	char Token[32];
@@ -89,19 +91,22 @@ void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 	unsigned int Position = 0;
 	unsigned int Length = strlen(InfixExpression);
 
-	LLS_CreateStack(&Stack); //스텍만들기
+	LLS_CreateStack(&Stack); //스택만들기
 
 	while (Position < Length) {
 		Position += GetNextToken(&InfixExpression[Position], Token, &Type);
 
+		// 숫자라면
 		if (Type == OPERAND) {
 			strcat(PostfixExpression, Token);
-			strcat(PostfixExpression, " ");  // 공백 추가
+			strcat(PostfixExpression, " ");
 		}
+		// 왼쪽 소괄호라면
 		else if (Type == LEEF_PARENTHESIS) {
 			// 여는 괄호를 스택에 푸쉬
 			LLS_Push(Stack, LLS_CreateNode(Token));
 		}
+		// 오른쪽 소괄호라면
 		else if (Type == RIGHT_PARENTHESIS) {
 			// 닫는 괄호일 경우, 여는 괄호를 만날 때까지 팝
 			while (!LLS_IsEmpty(Stack)) {
@@ -118,9 +123,10 @@ void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 				}
 			}
 		}
-		else {  // 연산자 처리
+		// 연산자라면
+		else {
 			while (!LLS_IsEmpty(Stack) &&
-				!IsPrior(LLS_Top(Stack)->Data[0], Token[0])) {
+				!IsPrior(LLS_Top(Stack)->Data[0], Token[0])) {  //스택이 비어있지 않고, 우선순위가 옳을 동안
 				Node* Popped = LLS_Pop(Stack);
 
 				if (Popped->Data[0] != LEEF_PARENTHESIS) {
@@ -135,7 +141,7 @@ void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 		}
 	}
 
-	// 스택에 남아있는 연산자 추가
+	// 스택에 남아있는 연산자 추가?
 	while (!LLS_IsEmpty(Stack)) {
 		Node* Popped = LLS_Pop(Stack);
 
@@ -150,7 +156,7 @@ void GetPostfix(char* InfixExpression, char* PostfixExpression) {
 	LLS_DestroyStack(Stack);
 }
 
-
+// 후위표기식 계산 함수
 double Calculate(char* PostfixExpression)
 {
 	LinkedListStack* Stack;
@@ -168,20 +174,24 @@ double Calculate(char* PostfixExpression)
 	{
 		Read += GetNextToken(&PostfixExpression[Read], Token, &Type);
 
+		// 띄어쓰기 건너뛰기
 		if (Type == SPACE)
 			continue;
 
+		// 숫자면
 		if (Type == OPERAND)
 		{
-			Node* NewNode = LLS_CreateNode(Token);
-			LLS_Push(Stack, NewNode);
+			Node* NewNode = LLS_CreateNode(Token); //노드 만들고
+			LLS_Push(Stack, NewNode);			   //스택에 삽입
 		}
+		// 연산자면
 		else
 		{
 			char ResultString[32];
 			double Operator1, Operator2, TempResult;
 			Node* OperatorNode;
 
+			// 스택에서 숫자 두개 빼기
 			OperatorNode = LLS_Pop(Stack);
 			Operator2 = atof(OperatorNode->Data);
 			LLS_DestroyNode(OperatorNode);
@@ -190,6 +200,7 @@ double Calculate(char* PostfixExpression)
 			Operator1 = atof(OperatorNode->Data);
 			LLS_DestroyNode(OperatorNode);
 
+			// 연산자 종류에 따라 연산하기
 			switch (Type)
 			{
 			case PLUS: TempResult = Operator1 + Operator2; break;
@@ -198,16 +209,16 @@ double Calculate(char* PostfixExpression)
 			case DIVIDE: TempResult = Operator1 / Operator2; break;
 			}
 
-			_gcvt(TempResult, 10, ResultString);
-			LLS_Push(Stack, LLS_CreateNode(ResultString));
+			_gcvt(TempResult, 10, ResultString);			// 문자열로 외어 있는 계산 결과를 소수로 변환하는 내장함수 사용
+			LLS_Push(Stack, LLS_CreateNode(ResultString)); 	// 계산결과 노드 만들고 스택에 삽입
 		}
 	}
 
-	ResultNode = LLS_Pop(Stack);
-	Result = atof(ResultNode->Data);
-	LLS_DestroyNode(ResultNode);
+	ResultNode = LLS_Pop(Stack);	  // 스택 맨 위(최상위노드) 가리키기
+	Result = atof(ResultNode->Data);  // 소수로 되어 있는 계산 결과를 문자열로 변환
 
-	LLS_DestroyStack(Stack);
+	LLS_DestroyNode(ResultNode); // 노드 소멸
+	LLS_DestroyStack(Stack);	 // 스택 소멸
 
-	return Result;
+	return Result;  //계산 결과 반환
 }
