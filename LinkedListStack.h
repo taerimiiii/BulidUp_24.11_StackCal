@@ -5,18 +5,20 @@
 #include <string.h>
 #include <stdlib.h>
 
-// ³ëµå ±¸Á¶Ã¼
+// ë…¸ë“œ êµ¬ì¡°ì²´
 typedef struct tagNode {
 	char* Data;
 	struct tagNode* NextNode;
 } Node;
 
-// ½ºÅÃ ±¸Á¶Ã¼
+// ìŠ¤íƒ êµ¬ì¡°ì²´
 typedef struct tagLinkedListStack {
-	Node* List; //Çìµå, ½ºÅÃÀÇ ¸Ç ¾Æ·¡
-	Node* Top;  //Å×ÀÏ, ½ºÅÃÀÇ ¸Ç À§
+	Node* List; //í—¤ë“œ, ìŠ¤íƒì˜ ë§¨ ì•„ë˜
+	Node* Top;  //í…Œì¼, ìŠ¤íƒì˜ ë§¨ ìœ„
 } LinkedListStack;
 
+
+// ë§í¬ë“œ ë¦¬ìŠ¤íŠ¸ ê¸°ë°˜ ìŠ¤íƒê³¼ ìŠ¤íƒì˜ ë…¸ë“œ í‘œí˜„í•˜ëŠ”ë° ì‚¬ìš©í•  í•¨ìˆ˜ ì„ ì–¸
 void LLS_CreateStack(LinkedListStack** Stack);
 void LLS_DestroyStack(LinkedListStack* Stack);
 
