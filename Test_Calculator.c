@@ -2,29 +2,34 @@
 #include <string.h>
 #include "Calculator.h"
 
-#define EXPRESSIONLEN 100	//»çÄ¢¿¬»ê½Ä ±æÀÌ
+#define EXPRESSIONLEN 100	//ì‚¬ì¹™ì—°ì‚°ì‹ ê¸¸ì´
 
 int main()
 {
-	char InfixExpression[EXPRESSIONLEN];	//ÁßÀ§Ç¥±â½Ä
-	char PostfixExpression[EXPRESSIONLEN];  //ÈÄÀ§Ç¥±â½Ä
+	char InfixExpression[EXPRESSIONLEN];	//ì¤‘ìœ„í‘œê¸°ì‹
+	char PostfixExpression[EXPRESSIONLEN];  //í›„ìœ„í‘œê¸°ì‹
 
 	double Result = 0.0;
 
-	memset(InfixExpression, 0, sizeof(InfixExpression));
+	// ë©”ëª¨ë¦¬ì„¸íŒ…
+	memset(InfixExpression, 0, sizeof(InfixExpression));	//ì „ë¶€ 0ìœ¼ë¡œ ì„¸íŒ…
 	memset(PostfixExpression, 0, sizeof(PostfixExpression));
 
-	printf("°è»êÇÒ »çÄ¢¿¬»ê½ÄÀ» ÀÔ·ÂÇÏ½Ã¿À : ");
+	// ì…ë ¥
+	printf("ê³„ì‚°í•  ì‚¬ì¹™ì—°ì‚°ì‹ì„ ì…ë ¥í•˜ì‹œì˜¤ : ");
 	scanf("%s", InfixExpression);
 
+	// ì¤‘ìœ„í‘œê¸°ì‹ í›„ìœ„í‘œê¸°ì‹ìœ¼ë¡œ ë°”ê¾¸ê¸°
 	GetPostfix(InfixExpression, PostfixExpression);
 
-	printf("ÁßÀ§Ç¥±â½Ä : %s\nÈÄÀ§Ç¥±â½Ä : %s\n", InfixExpression, PostfixExpression);
+	// í™•ì¸ ë° ì‰¬ìš´ ì´í•´ë¥¼ ìœ„í•œ ì¶œë ¥
+	printf("ì¤‘ìœ„í‘œê¸°ì‹ : %s\ní›„ìœ„í‘œê¸°ì‹ : %s\n", InfixExpression, PostfixExpression);
 
-	//scanf("%s", PostfixExpression);
+	// í›„ìœ„í‘œê¸°ì‹ ê³„ì‚°. ìŠ¤íƒ í™œìš©.
 	Result = Calculate(PostfixExpression);
 
-	printf("°è»ê±â °á°ú : %f\n", Result);
+	// ì¶œë ¥
+	printf("ê³„ì‚°ê¸° ê²°ê³¼ : %f\n", Result);
 
 	return 0;
 }
